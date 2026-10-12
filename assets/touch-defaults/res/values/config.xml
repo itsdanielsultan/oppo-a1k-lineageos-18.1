@@ -1,0 +1,1 @@
+<resources><bool name="def_haptic_feedback">false</bool><bool name="def_sound_effects_enabled">true</bool><bool name="def_dtmf_tones_enabled">true</bool><bool name="def_charging_vibration_enabled">false</bool></resources>

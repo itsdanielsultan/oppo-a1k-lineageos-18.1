@@ -1,0 +1,114 @@
+[
+  {
+    "package": "com.google.android.googlequicksearchbox",
+    "version": "17.64.15.ve.arm64",
+    "version_code": 301817218,
+    "min_sdk": 30,
+    "target": "/system/product/priv-app/Velvet"
+  },
+  {
+    "package": "com.google.android.apps.messaging",
+    "version": "messages.android_20261002_00_RC00.phone_dynamic",
+    "version_code": 324451063,
+    "min_sdk": 29,
+    "target": "/system/product/app/Messages"
+  },
+  {
+    "package": "com.android.vending",
+    "version": "53.5.37-29 [0] [PR] 994794998",
+    "version_code": 85353720,
+    "min_sdk": 29,
+    "target": "/system/product/priv-app/Phonesky"
+  },
+  {
+    "package": "com.google.android.marvin.talkback",
+    "version": "17.0.1.926549743",
+    "version_code": 60215178,
+    "min_sdk": 29,
+    "target": "/system/product/app/talkback"
+  },
+  {
+    "package": "com.google.android.deskclock",
+    "version": "9.1 (965977594)",
+    "version_code": 76112330,
+    "min_sdk": 29,
+    "target": "/system/product/app/DeskClockGoogle"
+  },
+  {
+    "package": "com.google.android.dialer",
+    "version": "241.0.991235506",
+    "version_code": 20129558,
+    "min_sdk": 30,
+    "target": "/system/product/priv-app/GoogleDialer"
+  },
+  {
+    "package": "com.google.android.webview",
+    "version": "153.0.8010.57",
+    "version_code": 801005701,
+    "min_sdk": 29,
+    "target": "/system/product/app/WebViewGoogle"
+  },
+  {
+    "package": "com.google.android.contacts",
+    "version": "4.89.27.989965096",
+    "version_code": 3295893,
+    "min_sdk": 29,
+    "target": "/system/product/app/GoogleContacts"
+  },
+  {
+    "package": "com.google.android.calculator",
+    "version": "9.3 (967717812)",
+    "version_code": 85022643,
+    "min_sdk": 29,
+    "target": "/system/product/app/CalculatorGoogle"
+  },
+  {
+    "package": "com.android.chrome",
+    "version": "154.0.8037.126",
+    "version_code": 803712600,
+    "min_sdk": 29,
+    "target": "/system/product/app/Chrome"
+  },
+  {
+    "package": "com.google.android.gms",
+    "version": "26.37.37 (150400-994713346)",
+    "version_code": 263737022,
+    "min_sdk": 30,
+    "target": "/system/product/priv-app/GmsCore"
+  },
+  {
+    "package": "com.google.android.ims",
+    "version": "carrierservices.android_20250826_00_RC00.phone",
+    "version_code": 31153903,
+    "min_sdk": 26,
+    "target": "/system/product/priv-app/CarrierServices"
+  },
+  {
+    "package": "com.google.android.tts",
+    "version": "googletts.google-speech-apk_20260914.02_p2.986315744",
+    "version_code": 210683481,
+    "min_sdk": 29,
+    "target": "/system/product/app/GoogleTTS"
+  },
+  {
+    "package": "com.google.android.projection.gearhead",
+    "version": "17.7.663654-release",
+    "version_code": 177663654,
+    "min_sdk": 29,
+    "target": "/system/product/priv-app/AndroidAutoStub"
+  },
+  {
+    "package": "com.google.android.keep",
+    "version": "5.26.391.03.90",
+    "version_code": 220677611,
+    "min_sdk": 29,
+    "target": "/system/product/app/Keep"
+  },
+  {
+    "package": "com.google.android.inputmethod.latin",
+    "version": "18.5.1.993608717-beta-arm64-v8a",
+    "version_code": 176049542,
+    "min_sdk": 29,
+    "target": "/system/product/app/LatinImeGoogle"
+  }
+]

@@ -1,0 +1,17 @@
+work/
+.venv/
+__pycache__/
+*.pyc
+*.img
+*.img.xz
+*.img.gz
+*.bin
+*.abx
+*.pk8
+*.key
+*.pem
+*.log
+*.part
+.state
+hwparam.json
+.DS_Store

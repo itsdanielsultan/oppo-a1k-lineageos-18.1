@@ -1,0 +1,189 @@
+{
+  "model": "CPH1923",
+  "board": "oppo6762_18540",
+  "platform": "mt6765",
+  "chip_code": 1894,
+  "storage_capacity_gb": 32,
+  "memory_gb": 2,
+  "stock_android": 9,
+  "stock_vendor_security_patch": "2021-05-05",
+  "stock_boot_sha256": "939728e14db06a428f34fa49cd6037d36635974091e5368f6f3139cef774a7c5",
+  "stock_vendor_sha256": "3d8cf8ffb3bedfb3edb3e90ee6aaaa7ffac0d19552730236e925e7dcedfb8f1d",
+  "stock_system_sha256": "95b116874f10a87dd297109b82ed320d5054e1fa54cccbc27cf920890e78ae98",
+  "partitions": {
+    "boot_para": {
+      "offset": 32768,
+      "bytes": 1048576
+    },
+    "recovery": {
+      "offset": 1081344,
+      "bytes": 33554432
+    },
+    "para": {
+      "offset": 34635776,
+      "bytes": 524288
+    },
+    "opporeserve1": {
+      "offset": 35160064,
+      "bytes": 8388608
+    },
+    "opporeserve2": {
+      "offset": 43548672,
+      "bytes": 67108864
+    },
+    "opporeserve3": {
+      "offset": 110657536,
+      "bytes": 67108864
+    },
+    "oppo_custom": {
+      "offset": 177766400,
+      "bytes": 1048576
+    },
+    "expdb": {
+      "offset": 178814976,
+      "bytes": 20971520
+    },
+    "frp": {
+      "offset": 199786496,
+      "bytes": 1048576
+    },
+    "vbmeta": {
+      "offset": 200835072,
+      "bytes": 8388608
+    },
+    "nvcfg": {
+      "offset": 209223680,
+      "bytes": 33554432
+    },
+    "nvdata": {
+      "offset": 242778112,
+      "bytes": 67108864
+    },
+    "metadata": {
+      "offset": 309886976,
+      "bytes": 33554432
+    },
+    "protect1": {
+      "offset": 343441408,
+      "bytes": 8388608
+    },
+    "protect2": {
+      "offset": 351830016,
+      "bytes": 8880128
+    },
+    "seccfg": {
+      "offset": 360710144,
+      "bytes": 8388608
+    },
+    "persist": {
+      "offset": 369098752,
+      "bytes": 50331648
+    },
+    "sec1": {
+      "offset": 419430400,
+      "bytes": 2097152
+    },
+    "proinfo": {
+      "offset": 421527552,
+      "bytes": 3145728
+    },
+    "md1img": {
+      "offset": 424673280,
+      "bytes": 104857600
+    },
+    "spmfw": {
+      "offset": 529530880,
+      "bytes": 1048576
+    },
+    "scp1": {
+      "offset": 530579456,
+      "bytes": 1048576
+    },
+    "scp2": {
+      "offset": 531628032,
+      "bytes": 1048576
+    },
+    "sspm_1": {
+      "offset": 532676608,
+      "bytes": 1048576
+    },
+    "sspm_2": {
+      "offset": 533725184,
+      "bytes": 1048576
+    },
+    "gz1": {
+      "offset": 534773760,
+      "bytes": 16777216
+    },
+    "gz2": {
+      "offset": 551550976,
+      "bytes": 16777216
+    },
+    "nvram": {
+      "offset": 568328192,
+      "bytes": 67108864
+    },
+    "lk": {
+      "offset": 635437056,
+      "bytes": 1048576
+    },
+    "lk2": {
+      "offset": 636485632,
+      "bytes": 1048576
+    },
+    "boot": {
+      "offset": 637534208,
+      "bytes": 33554432
+    },
+    "logo": {
+      "offset": 671088640,
+      "bytes": 16777216
+    },
+    "dtbo": {
+      "offset": 687865856,
+      "bytes": 16777216
+    },
+    "tee1": {
+      "offset": 704643072,
+      "bytes": 5242880
+    },
+    "tee2": {
+      "offset": 709885952,
+      "bytes": 11534336
+    },
+    "odm": {
+      "offset": 721420288,
+      "bytes": 268435456
+    },
+    "vendor": {
+      "offset": 989855744,
+      "bytes": 964689920
+    },
+    "system": {
+      "offset": 1954545664,
+      "bytes": 5033164800
+    },
+    "cache": {
+      "offset": 6987710464,
+      "bytes": 452984832
+    },
+    "userdata": {
+      "offset": 7440695296,
+      "bytes": 23765958144
+    },
+    "otp": {
+      "offset": 31206653440,
+      "bytes": 45088768
+    },
+    "flashinfo": {
+      "offset": 31251742208,
+      "bytes": 16777216
+    }
+  },
+  "mtkclient_commit": "cd25cf9c1ff6d36e82697ac2c798e69e9cfb78c3",
+  "secilc_commit": "2233a23a4d4f1bf29054037babec13f30d038e65",
+  "publisher_filename": "lineage-18.1-20240121-UNOFFICIAL-arm64_bgS.img.xz",
+  "publisher_url": "https://sourceforge.net/projects/andyyan-gsi/files/lineage-18.x/lineage-18.1-20240121-UNOFFICIAL-arm64_bgS.img.xz/download",
+  "publisher_sha256": "7bb7c4ebd336ad1615ce9f078d6a455e2c524d736578571ac41671b36d23415a",
+  "final_personal_image_sha256": "43c10328b72a77514774cbc25e8e1a46cde454593654312c9d45a2fcdf41d883"
+}

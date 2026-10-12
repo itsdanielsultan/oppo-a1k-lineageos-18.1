@@ -1,0 +1,42 @@
+--- rw-system-upstream.sh
++++ rw-system-tested.sh
+@@ -1,5 +1,6 @@
+ #!/system/bin/sh
+ 
++
+ if [ -z "$debug" ] && [ -f /cache/phh-log ];then
+ 	mkdir -p /cache/phh
+ 	debug=1 exec sh -x "$(readlink -f -- "$0")" > /cache/phh/logs 2>&1
+@@ -10,7 +11,7 @@
+     chmod 0644 /cache/phh/logs
+ fi
+ 
+-if [ -f /cache/phh-adb ];then
++if [ -f /cache/phh-adb ] && [ "$(getprop ro.boot.hardware)" != mt6765 ];then
+     setprop ctl.stop adbd
+     setprop ctl.stop adbd_apex
+     mount -t configfs none /config
+@@ -52,6 +53,12 @@
+     echo 2 > /sys/devices/virtual/android_usb/android0/port_mode
+ fi
+ 
++# CPH1923 display default, applied before Android starts the interface.
++if [ "$(getprop ro.boot.hardware)" = mt6765 ]; then
++    resetprop_phh ro.sf.lcd_density 320
++    resetprop_phh ro.config.wallpaper /system/etc/cph-wallpaper-defaults/wallpaper
++fi
++
+ vndk="$(getprop persist.sys.vndk)"
+ [ -z "$vndk" ] && vndk="$(getprop ro.vndk.version |grep -oE '^[0-9]+')"
+ 
+@@ -81,6 +88,10 @@
+             additional="/apex/com.android.vndk.v28/lib64/libsoftkeymasterdevice.so /apex/com.android.vndk.v29/lib64/libsoftkeymasterdevice.so"
+         else
+             getprop ro.vendor.build.fingerprint | grep -qiE '^samsung/' && return 0
++        fi
++        # Match the legacy Keymaster wrapper to the Oppo security hardware.
++        if [ "$(getprop ro.boot.hardware)" = mt6765 ]; then
++            additional="$additional /apex/com.android.vndk.v28/lib/libsoftkeymasterdevice.so /apex/com.android.vndk.v28/lib64/libsoftkeymasterdevice.so /apex/com.android.vndk.v28/lib/libpuresoftkeymasterdevice.so /apex/com.android.vndk.v28/lib64/libpuresoftkeymasterdevice.so"
+         fi
+         for f in \
+             /vendor/lib64/hw/android.hardware.keymaster@3.0-impl-qti.so /vendor/lib/hw/android.hardware.keymaster@3.0-impl-qti.so \

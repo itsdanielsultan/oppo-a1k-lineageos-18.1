@@ -1,0 +1,2 @@
+on post-fs-data
+    exec - root -- /system/bin/cph-wallpaper-defaults.sh

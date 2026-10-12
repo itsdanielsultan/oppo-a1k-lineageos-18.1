@@ -1,0 +1,4 @@
+01-21 04:56:34.614  1498  2000 E SupplicantStaIfaceHal: Failed to save variables for: "EXAMPLE-TRANSITION-SSID"SAE
+01-21 04:56:34.616  1498  2000 E SupplicantStaIfaceHal: Failed to add/save network configuration: "EXAMPLE-TRANSITION-SSID"SAE
+01-21 04:56:44.565  1498  2000 E SupplicantStaIfaceHal: Failed to save variables for: "EXAMPLE-TRANSITION-SSID"SAE
+01-21 04:56:44.567  1498  2000 E SupplicantStaIfaceHal: Failed to add/save network configuration: "EXAMPLE-TRANSITION-SSID"SAE

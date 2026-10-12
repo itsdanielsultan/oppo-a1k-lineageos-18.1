@@ -1,0 +1,11 @@
+--- plat-upstream.cil
++++ plat-cph1923.cil
+@@ -402,7 +402,7 @@
+ (typealias rs_data_file)
+ (typealiasactual rs_data_file app_exec_data_file)
+ (class security (compute_av compute_create compute_member check_context load_policy compute_relabel compute_user setenforce setbool setsecparam setcheckreqprot read_policy validate_trans ))
+-(class process (fork transition sigchld sigkill sigstop signull signal ptrace getsched setsched getsession getpgid setpgid getcap setcap share getattr setexec setfscreate noatsecure siginh setrlimit rlimitinh dyntransition setcurrent execmem execstack execheap setkeycreate setsockcreate getrlimit ))
++(class process (fork transition sigchld sigkill sigstop sigcont signull signal ptrace getsched setsched getsession getpgid setpgid getcap setcap share getattr setexec setfscreate noatsecure siginh setrlimit rlimitinh dyntransition setcurrent execmem execstack execheap setkeycreate setsockcreate getrlimit ))
+ (mlsconstrain (process (sigkill sigstop signal ptrace setsched setpgid setcap share setrlimit)) (or (eq l1 l2) (eq t1 mlstrustedsubject)))
+ (mlsconstrain (process (ptrace getsched getsession getpgid getcap share getattr)) (or (dom l1 l2) (eq t1 mlstrustedsubject)))
+ (mlsconstrain (process (transition dyntransition)) (or (and (eq h1 h2) (eq l1 l2)) (eq t1 mlstrustedsubject)))

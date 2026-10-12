@@ -1,0 +1,16 @@
+{
+  "native_home_default": "/system/etc/cph-wallpaper-defaults/wallpaper",
+  "boot_initializer": "preserved",
+  "home_id": 3,
+  "lock_id": 4,
+  "all_five_rom_payload_hashes_matched": true,
+  "all_16_bundled_app_versions_preserved": true,
+  "wifi_validated": true,
+  "native_density": 320,
+  "crypto": "encrypted/file",
+  "selinux": "Enforcing",
+  "adb": "shell",
+  "stay_awake": 0,
+  "actual_factory_reset_test": false,
+  "fresh_directory_initialization_test_passed": true
+}

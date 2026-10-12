@@ -1,0 +1,41 @@
+diff --git a/mtkclient/Library/Connection/usblib.py b/mtkclient/Library/Connection/usblib.py
+index fafb1ab..f3a0887 100644
+--- a/mtkclient/Library/Connection/usblib.py
++++ b/mtkclient/Library/Connection/usblib.py
+@@ -129,14 +129,16 @@ class UsbClass(DeviceClass):
+         self.EP_OUT = None
+         self.is_serial = False
+         self.queue = Queue()
+-        if sys.platform.startswith('freebsd') or sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
++        if sys.platform.startswith('darwin'):
++            self.backend = usb.backend.libusb1.get_backend()
++        elif sys.platform.startswith('freebsd') or sys.platform.startswith('linux'):
+             self.backend = usb.backend.libusb1.get_backend(find_library=lambda x: "libusb-1.0.so")
+         elif sys.platform.startswith('win32'):
+             if calcsize("P") * 8 == 64:
+                 self.backend = usb.backend.libusb1.get_backend(find_library=lambda x: "libusb-1.0.dll")
+             else:
+                 self.backend = usb.backend.libusb1.get_backend(find_library=lambda x: "libusb32-1.0.dll")
+-        if self.backend is not None:
++        if self.backend is not None and sys.platform.startswith('win32'):
+             try:
+                 self.backend.lib.libusb_set_option.argtypes = [c_void_p, c_int]
+                 self.backend.lib.libusb_set_option(self.backend.ctx, 1)
+@@ -343,6 +345,17 @@ class UsbClass(DeviceClass):
+ 
+         if self.interface != -1:
+             itf = usb.util.find_descriptor(self.configuration, bInterfaceNumber=self.interface)
++            if sys.platform.startswith('darwin') and self.vid == 0x0E8D and self.pid == 0x0003 and self.interface == 1:
++                # macOS owns the CDC control interface; endpoint-zero requests do
++                # not need PyUSB to claim it. Keep normal claims for the data interface.
++                control_itf = usb.util.find_descriptor(self.configuration, bInterfaceNumber=0)
++                if control_itf is not None and control_itf.bInterfaceClass == 2:
++                    original_claim = self.device._ctx.managed_claim_interface
++                    def claim_data_interface(device, interface):
++                        if interface == 0:
++                            return None
++                        return original_claim(device, interface)
++                    self.device._ctx.managed_claim_interface = claim_data_interface
+             try:
+                 if self.device.is_kernel_driver_active(0):
+                     self.debug("Detaching kernel driver")

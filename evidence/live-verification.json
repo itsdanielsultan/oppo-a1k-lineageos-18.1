@@ -1,0 +1,135 @@
+{
+  "android": "11",
+  "sdk": "30",
+  "boot_completed": "1",
+  "encrypted": "encrypted",
+  "crypto_type": "file",
+  "selinux": "Enforcing",
+  "native_density": "320",
+  "density": "Physical density: 320",
+  "packages": [
+    {
+      "package": "com.google.android.googlequicksearchbox",
+      "bundled_version": "17.64.15.ve.arm64",
+      "bundled_code": 301817218,
+      "system_path": "/system/product/priv-app/Velvet",
+      "min_sdk": 30
+    },
+    {
+      "package": "com.google.android.apps.messaging",
+      "bundled_version": "messages.android_20261002_00_RC00.phone_dynamic",
+      "bundled_code": 324451063,
+      "system_path": "/system/product/app/Messages",
+      "min_sdk": 29
+    },
+    {
+      "package": "com.android.vending",
+      "bundled_version": "53.5.37-29 [0] [PR] 994794998",
+      "bundled_code": 85353720,
+      "system_path": "/system/product/priv-app/Phonesky",
+      "min_sdk": 29
+    },
+    {
+      "package": "com.google.android.marvin.talkback",
+      "bundled_version": "17.0.1.926549743",
+      "bundled_code": 60215178,
+      "system_path": "/system/product/app/talkback",
+      "min_sdk": 29
+    },
+    {
+      "package": "com.google.android.deskclock",
+      "bundled_version": "9.1 (965977594)",
+      "bundled_code": 76112330,
+      "system_path": "/system/product/app/DeskClockGoogle",
+      "min_sdk": 29
+    },
+    {
+      "package": "com.google.android.dialer",
+      "bundled_version": "241.0.991235506",
+      "bundled_code": 20129558,
+      "system_path": "/system/product/priv-app/GoogleDialer",
+      "min_sdk": 30
+    },
+    {
+      "package": "com.google.android.webview",
+      "bundled_version": "153.0.8010.57",
+      "bundled_code": 801005701,
+      "system_path": "/system/product/app/WebViewGoogle",
+      "min_sdk": 29
+    },
+    {
+      "package": "com.google.android.contacts",
+      "bundled_version": "4.89.27.989965096",
+      "bundled_code": 3295893,
+      "system_path": "/system/product/app/GoogleContacts",
+      "min_sdk": 29
+    },
+    {
+      "package": "com.google.android.calculator",
+      "bundled_version": "9.3 (967717812)",
+      "bundled_code": 85022643,
+      "system_path": "/system/product/app/CalculatorGoogle",
+      "min_sdk": 29
+    },
+    {
+      "package": "com.android.chrome",
+      "bundled_version": "154.0.8037.126",
+      "bundled_code": 803712600,
+      "system_path": "/system/product/app/Chrome",
+      "min_sdk": 29
+    },
+    {
+      "package": "com.google.android.gms",
+      "bundled_version": "26.37.37 (150400-994713346)",
+      "bundled_code": 263737022,
+      "system_path": "/system/product/priv-app/GmsCore",
+      "min_sdk": 30
+    },
+    {
+      "package": "com.google.android.ims",
+      "bundled_version": "carrierservices.android_20250826_00_RC00.phone",
+      "bundled_code": 31153903,
+      "system_path": "/system/product/priv-app/CarrierServices",
+      "min_sdk": 26
+    },
+    {
+      "package": "com.google.android.tts",
+      "bundled_version": "googletts.google-speech-apk_20260914.02_p2.986315744",
+      "bundled_code": 210683481,
+      "system_path": "/system/product/app/GoogleTTS",
+      "min_sdk": 29
+    },
+    {
+      "package": "com.google.android.projection.gearhead",
+      "bundled_version": "17.7.663654-release",
+      "bundled_code": 177663654,
+      "system_path": "/system/product/priv-app/AndroidAutoStub",
+      "min_sdk": 29
+    },
+    {
+      "package": "com.google.android.keep",
+      "bundled_version": "5.26.391.03.90",
+      "bundled_code": 220677611,
+      "system_path": "/system/product/app/Keep",
+      "min_sdk": 29
+    },
+    {
+      "package": "com.google.android.inputmethod.latin",
+      "bundled_version": "18.5.1.993608717-beta-arm64-v8a",
+      "bundled_code": 176049542,
+      "system_path": "/system/product/app/LatinImeGoogle",
+      "min_sdk": 29
+    }
+  ],
+  "wifi_compat_default": "false",
+  "touch_haptics_default": "false",
+  "touch_sound_default": "true",
+  "charging_vibration_default": "false",
+  "touch_haptics_current": "0",
+  "touch_sound_current": "1",
+  "wifi_validated": true,
+  "verification_date": "2026-10-12",
+  "physical_color_confirmation": "Owner reported colors perfectly fine on Android 11",
+  "units_tested": 1,
+  "factory_reset_actually_tested": false
+}

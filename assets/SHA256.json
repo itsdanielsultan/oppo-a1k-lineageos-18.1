@@ -1,0 +1,62 @@
+[
+  {
+    "path": "assets/OppoTouchDefaults.apk",
+    "sha256": "0f5b0178b89808b1f2bc43f0990a4a7fb1649cadc7d390a53527ce1f666b0154"
+  },
+  {
+    "path": "assets/OppoWifiCompat.apk",
+    "sha256": "e2c1e5b34f3f4edd4dc1de28daf5d68d15cb6f35df23751ebcb5b5383ae847fb"
+  },
+  {
+    "path": "assets/cph-wallpaper-defaults.rc",
+    "sha256": "85dae6096cd7236dd91cd50843147bc6c80e763053945219d69aa062fbc99c30"
+  },
+  {
+    "path": "assets/lock-blue-hour-lake.png",
+    "sha256": "a58b5b661a1bfda3d52a0385c27ba201d12b4db911ddb7334d605488da056388"
+  },
+  {
+    "path": "assets/cph-wallpaper-defaults.sh",
+    "sha256": "1344771c589b36ff16a44fbaaec9061f33b482e0fee17563bd9b2ac42758bf36"
+  },
+  {
+    "path": "assets/home-midnight-glass.png",
+    "sha256": "9f66dd51207080509b1f880a7d609049de64aebecd0b592a1932cc3c1e6a6131"
+  },
+  {
+    "path": "assets/touch-defaults/AndroidManifest.xml",
+    "sha256": "3c7486e6ed211172979827e144ad70b93f90fda5ddde42eefa5c8bbc1d3f3eb0"
+  },
+  {
+    "path": "assets/wifi-compat/AndroidManifest.xml",
+    "sha256": "dae7c8845e6be34abbeb19a288e8c289b36673a252e196e6cd0ba0725467207f"
+  },
+  {
+    "path": "assets/wallpaper-defaults/wallpaper_lock",
+    "sha256": "66dbf983c8c3f07e0b2529fe63fa00d2400b71b91c2c5be3b21db0cfff6d57e7"
+  },
+  {
+    "path": "assets/wallpaper-defaults/wallpaper_lock_orig",
+    "sha256": "29491bd344fcc2acccdbebf2eac890ed027dc877e64049d48fff5970b7c59fcf"
+  },
+  {
+    "path": "assets/wallpaper-defaults/wallpaper",
+    "sha256": "6e3555d3820c695d599972222dc63a52fc853c7e0e363e4ca7dd1b641c148f31"
+  },
+  {
+    "path": "assets/wallpaper-defaults/wallpaper_info.xml",
+    "sha256": "2a9fa4307ad1ead3b29dd63bc029eb73b137b19da6dbb581f48e5f3eaea64ac4"
+  },
+  {
+    "path": "assets/wallpaper-defaults/wallpaper_orig",
+    "sha256": "30e72fdcdb4485c969e37bf8797bfb3e4be6fe3d6d9e646d60bf5831f0628fec"
+  },
+  {
+    "path": "assets/wifi-compat/res/values/config.xml",
+    "sha256": "abd91fd99f5fe7e99642bf4d2d46afe942d54f4ad2ab87b0096fc86397733fe7"
+  },
+  {
+    "path": "assets/touch-defaults/res/values/config.xml",
+    "sha256": "873a2705a4e6fbc1fa9307e03a5251d8270e337e291cbc2114fc2dbb029f2e12"
+  }
+]

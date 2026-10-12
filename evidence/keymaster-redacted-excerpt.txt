@@ -1,0 +1,6 @@
+01-01 00:00:39.875   803   803 I TrustonicTeeKeymasterImpl: Read os_version = 90000, os_patchlevel = 202105 [vendor/mediatek/proprietary/trustzone/trustonic/source/external/keymaster/common/400b/3.0/src/trustonic_tee_keymaster_impl.cpp:108]
+01-01 00:00:40.107   358   358 E vold    : begin failed, code -62
+01-01 00:00:40.108   803   803 D TlcTeeKeyMaster: TEE_UpgradeKey exiting with 0 [vendor/mediatek/proprietary/trustzone/trustonic/source/external/keymaster/common/400b/3.0/src/tlcTeeKeymaster_if.cpp:1708]
+01-01 00:00:40.117   358   358 E vold    : begin failed, code -62
+01-01 00:00:40.118   803   803 D TlcTeeKeyMaster: TEE_UpgradeKey exiting with 0 [vendor/mediatek/proprietary/trustzone/trustonic/source/external/keymaster/common/400b/3.0/src/tlcTeeKeymaster_if.cpp:1708]
+01-01 00:00:40.139   358   358 E vold    : begin failed, code -62
