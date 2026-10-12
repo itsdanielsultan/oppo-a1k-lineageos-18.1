@@ -1,10 +1,10 @@
-# Symptoms, evidence and next actions
+# Troubleshooting: what you see and what to do next
 
-Use the symptom's checkpoint, not another random ROM or wipe. Keep logs private until redacted. An operation's result file and complete readback are stronger evidence than a filename, a tool launch, a black screen or a single “success” message.
+Find the problem in the table, then check the result file and log for that step. Keep logs private until you have removed personal details. A black screen or a single “success” line does not tell you whether the complete operation finished; the saved result and full readback do.
 
 | Symptom | What it establishes | Next action |
 |---|---|---|
-| `adb devices` empty, Mac sees no USB phone | No usable connection yet | Reconnect the data cable; wait about ten seconds for enumeration; inspect again |
+| `adb devices` empty, Mac sees no USB phone | No usable connection yet | Reconnect the data cable; wait about ten seconds for the Mac to detect the phone; inspect again |
 | Mac sees Oppo/Phh USB but no ADB interface | USB is present; debugging may be off/hidden | Enable Developer options and USB debugging, select File transfer if needed, approve the Mac |
 | ADB says `unauthorized` | Android is present but this host is not approved | Unlock the phone and accept its normal debugging prompt |
 | Android home screen visible | Framework/launcher reached a usable screen | Check release/SDK, boot complete, encryption, policy, density and network; do not declare every hardware feature tested |
@@ -65,7 +65,7 @@ Start it first, then enter boot ROM. It reads `expdb`, `para` and `cache` and do
 
 During the difficult Android 11 case, a timed startup snapshot was needed because the newest hang was not reliably represented in an old dump bank. The final production image does not retain that instrumentation. Recreating the old snapshots is not a normal install step, and the unsafe USB gadget teardown must not be re-enabled.
 
-## Do not conflate these situations
+## Checks that answer different questions
 
 * A correctly written image can still be incompatible with the vendor/kernel and fail boot.
 * A successful Android boot can still have bad physical colors.

@@ -1,15 +1,15 @@
-# Reproducing the system changes
+# Build the customized Android system
 
-## Two different image claims
+This page explains what the builder changes and how to add your own app updates. Start with [the installation guide](INSTALL.md) for the order of steps and the commands to run. A **system image** is the file containing the Android system that the installation tool writes to the phone.
 
-There are two outputs, and they must not be confused:
+## The core build and the version used on my phone
 
-* **Core reproduction:** the exact upstream `arm64_bgS` archive, the device fixes, overlays and wallpaper defaults. It retains the upstream Google app versions. The public builder was replayed offline successfully; its six central changed files matched the corresponding files in the live-tested final image byte for byte. Filesystem validation and vendor-policy compilation passed.
-* **Owner's final personal image:** those core fixes **plus 16 Google app updates exported from the owner's Google Play installation**. Its complete physical flash readback was `43c10328b72a77514774cbc25e8e1a46cde454593654312c9d45a2fcdf41d883`. That image booted and passed the final live checks. It is not mirrored here because it includes proprietary Google binaries.
+* **Core build:** the specified Android release plus this phone's fixes, settings packages and wallpaper defaults. It starts with the original release's Google app versions. We successfully ran the public builder on the Mac; its six central changed files matched the final installed version byte for byte. The filesystem and security-policy checks passed.
+* **My final build:** the core fixes **plus 16 Google app updates copied from my phone after Play Store installed them**. The complete system written to the phone was read back and had SHA-256 `43c10328b72a77514774cbc25e8e1a46cde454593654312c9d45a2fcdf41d883`. It booted and passed the phone checks. That full image is not uploaded here because it includes Google's proprietary app files.
 
 A rebuilt core image is not expected to have the personal image's hash. The app contents differ, and ordinary filesystem metadata can differ between rebuilds. Always use the receipt generated for your actual output. Do not copy a hash from an article into a receipt to make it pass.
 
-## Exact core input and transformations
+## The exact files and changes in the core build
 
 The input archive is publisher-hash pinned in [tested-profile.json](../evidence/tested-profile.json). Stock vendor is checked against `3d8cf8ffb3bedfb3edb3e90ee6aaaa7ffac0d19552730236e925e7dcedfb8f1d`; the builder never modifies the vendor backup.
 
@@ -33,7 +33,9 @@ The builder then:
 
 Neither the build tool nor the e2fsprogs tools access a phone or a mounted phone filesystem. Run them only against ordinary local image files. The guarded device tool is a separate explicit step.
 
-## Overlay source and signing
+## Source and signing for the two settings packages
+
+An **overlay** is a small package that changes existing Android settings. Our two overlays change Wi-Fi connection behavior and system touch feedback. They do not replace the Wi-Fi driver or run an app in the background.
 
 The provided configuration-only APKs contain no DEX. Their manifest/resource sources are in `assets/wifi-compat` and `assets/touch-defaults`. The signing certificate belongs to this project's local configuration overlay, not Google, Oppo or the Android platform.
 

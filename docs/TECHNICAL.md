@@ -1,8 +1,8 @@
 # The exact fixes and why they mattered
 
-This document separates observed evidence from hypotheses. It is not a list of settings to try randomly.
+These are the problems we found, the changes that addressed them, and the evidence for each change. The exact code and Android terms are kept here for readers who want to inspect the fixes. Follow [the installation guide](INSTALL.md) to apply them in the right order.
 
-## 1. macOS could enumerate the USB device without usable boot-ROM communication
+## 1. The Mac detected the phone, but MTKClient could not communicate with it
 
 The tested MTKClient version grouped Darwin with Linux and selected `libusb-1.0.so`. That is the wrong shared-library name for this Mac. The tested patch uses PyUSB's native `libusb1.get_backend()` discovery on Darwin, retains the Linux/FreeBSD path, and limits the Windows-specific `libusb_set_option` call to Windows.
 

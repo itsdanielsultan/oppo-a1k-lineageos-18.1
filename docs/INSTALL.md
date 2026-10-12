@@ -1,28 +1,39 @@
-# Complete installation: stock CPH1923 → customized Android 11
+# Install Android 11 on the tested Oppo A1k CPH1923
 
-This is the clean route assembled from the successful operations. **Do not repeat the Android 14/12 experiments first.** The refactored public tools have offline guard/rollback tests; their individual underlying operations were used on the phone, but a second cold installation with the public wrapper has not been performed. The precise validation boundary is in [VALIDATION](VALIDATION.md).
+Follow these steps in order. They combine the operations that worked on our phone; you do not need to repeat the failed Android 14 and Android 12 attempts.
 
-## 0. Confirm scope before downloading anything
+The process is: check the phone → save its original software → unlock it → build the Android 11 image with the fixes → install it and clear the old setup → check the result → update the apps.
 
-This workflow stops unless the boot-ROM chip is `0x766`, the entire GPT matches the recorded 32 GB CPH1923 layout, the stock boot hash matches, and the retained vendor is the exact tested firmware. A mismatch is a request for investigation, not an invitation to remove a check.
+The public tools have tests for their phone checks and recovery handling. The individual steps were used on the phone, but we have not repeated a complete installation with the repackaged tools. Read [what was tested](VALIDATION.md) and [recovery](RECOVERY.md) before starting.
 
-The unit had Android 9, SDK 28, VNDK 28, Treble enabled, system-as-root enabled, board `oppo6762_18540`, platform `mt6765`, a 720 × 1560 screen and 2 GB RAM. The kernel and vendor stayed stock throughout the successful custom installation. We did not recover a trustworthy complete stock marketing build string; the boot/vendor/system digests in the profile are the exact identifiers used instead.
+## 0. Check your exact model and original firmware
 
-Do not use these commands on an A1, A1s, A5, a differently numbered Oppo, or a CPH1923 with a different firmware hash without separate work. Do not choose a GSI using only a marketing chipset name.
+This guide is for the tested **32 GB Oppo A1k CPH1923**. The tools stop unless all of these match:
 
-## 1. Equipment, time and backups
+- Boot-ROM chip code `0x766`.
+- The complete recorded storage layout, called the GPT.
+- The original `boot` image's hash.
+- The exact tested `vendor` firmware, which contains the Oppo hardware drivers.
 
-You need the phone, its normal screen-unlock access, an Apple Silicon Mac, a stable data-capable USB cable, internet for downloads, and ample local storage. Reserve approximately **50 GB free** for the archive, sparse/raw images, private stock backups, verification reads and an optional updated-app build. Keep the Mac awake during transfers. If it is a laptop, connect its power supply.
+A hash, or checksum, identifies the contents of a file. Matching the model name alone is not enough. **If a check fails, stop and find out why. Do not remove it.**
 
-The first flash explicitly clears `userdata`, `metadata` and `cache`. Back up personal data before unlocking/flashing. The original owner chose to preserve nothing, which is not a recommendation for another person. A copy of `/sdcard` does not include all private app data, authenticator state or account credentials. Export those through the relevant apps before erasure.
+The original phone ran Android 9, SDK 28, VNDK 28, with Treble and system-as-root enabled. Its board was `oppo6762_18540`, platform `mt6765`, screen 720 × 1560 and RAM 2 GB. The original kernel and vendor drivers were kept. We could not confirm the complete original firmware build name, so the exact boot/vendor/system hashes in the recorded profile identify the tested software.
 
-Keep device backups private and in a second safe local location. Do not upload calibration, seccfg, NVRAM/NV data, partition dumps, account databases or raw logs to GitHub. Our repository's `work/` is ignored.
+Do not use these commands on an A1, A1s, A5, another Oppo model, or a CPH1923 with different firmware hashes without separate work. The Android image in this guide is a **GSI**: a generic system image adapted here for this phone. Do not choose one from the marketing chipset name alone.
 
-Transfers are not instant. The final 5 GB write in this session ran near 7–8 MB/s, and verification near 12–14 MB/s. Backups and full readbacks therefore take minutes. “Still busy” and “failed” are different conditions; use the phase and progress log.
+## 1. Gather the equipment and back up your data
 
-## 2. Clone the guide and set up the Mac
+You need the phone and access to unlock its screen, an Apple Silicon Mac, a reliable data-capable USB cable, and internet for downloads. Reserve approximately **50 GB free** on the Mac for downloads, converted images, backups, verification copies and an optional build with updated apps. Keep the Mac awake during transfers and plug in a laptop's power supply.
 
-Install Apple's Command Line Tools and Homebrew through their normal official flows if missing. Do not disable SIP, install random “MTK drivers,” or load an unknown kernel extension.
+**The first installation clears `userdata`, `metadata` and `cache`.** That removes apps, settings, accounts and personal files. Back up what you need before unlocking or installing. The original owner chose to preserve nothing; that is not a recommendation for another person. Copying `/sdcard` does not save all private app data, authenticator information or account credentials. Export those through the relevant apps first.
+
+Keep the original-software backups private and make a second copy in another safe local location. Do not upload calibration, seccfg, NVRAM/NV data, partition dumps, account databases or raw logs to GitHub. The repository excludes `work/` from Git.
+
+Expect transfers to take minutes. Our final 5 GB write ran near 7–8 MB/s, with verification near 12–14 MB/s. Follow the progress log to distinguish an active transfer from a failed one.
+
+## 2. Install the Mac tools and check the Android connection
+
+Install Apple's Command Line Tools and Homebrew through their official setup instructions if they are missing. Do not disable SIP, install random “MTK drivers,” or load an unknown kernel extension.
 
 ```sh
 git clone https://github.com/itsdanielsultan/oppo-a1k-lineageos-18.1.git
@@ -30,9 +41,11 @@ cd oppo-a1k-lineageos-18.1
 bash tools/setup_macos.sh
 ```
 
-The setup script uses Python **3.12.12** through `uv`, a project-local virtual environment, native Homebrew libusb/e2fsprogs/libsepol/ADB, the tested MTKClient commit and the checked macOS USB diff. It installs the **headless** Python dependencies. Qt and FUSE mounting are unnecessary for this command-line workflow. `fuse library not installed` was printed by the working sessions; it did not prevent the operations used here.
+The script installs Python **3.12.12** through `uv` and creates a Python environment inside the project. It also installs the Homebrew USB, filesystem, SELinux and Android tools: libusb, e2fsprogs, libsepol and ADB. It downloads the tested MTKClient revision and applies the macOS USB fix.
 
-The editable MTKClient checkout is the one Python imports. Do not patch a clone but accidentally run an unrelated installed package from another interpreter. Check:
+Only the command-line Python dependencies are needed. Qt and FUSE mounting are not required. The working sessions printed `fuse library not installed`; that message did not prevent these steps.
+
+Check that Python is using this project's MTKClient copy, with the expected revision and USB changes:
 
 ```sh
 .venv/bin/python -c 'import mtkclient; print(mtkclient.__file__)'
@@ -41,9 +54,11 @@ git -C work/mtkclient diff -- mtkclient/Library/Connection/usblib.py
 .venv/bin/python tools/device.py --help
 ```
 
-The commit must be `cd25cf9c1ff6d36e82697ac2c798e69e9cfb78c3`; the last command prints help without opening a phone.
+The revision must be `cd25cf9c1ff6d36e82697ac2c798e69e9cfb78c3`. Stop if Python points to an unrelated installed copy or the revision differs. The last command only prints help; it does not connect to a phone.
 
-For normal Android inspection, enable Developer options and USB debugging on the phone, approve your own Mac, and choose File transfer if its USB configuration hides debugging. `adb devices -l` must list an authorized device. Use your phone's serial if needed; this guide does not hardcode the owner's serial.
+**ADB** is the tool used to inspect Android over USB. Enable Developer options and USB debugging on the phone, approve your own Mac, and select File transfer if debugging is hidden by the current USB mode. `adb devices -l` must show an authorized phone. Use your own phone's serial when needed; this guide does not hardcode the owner's serial.
+
+Check the original Android setup:
 
 ```sh
 adb shell getprop ro.product.model
@@ -53,73 +68,79 @@ adb shell getprop ro.treble.enabled
 adb shell getprop ro.build.system_root_image
 ```
 
-Expected original values are `CPH1923`, `arm64-v8a`, `28`, `true`, `true`. ADB is useful for ordinary Android inspection. **It is not the boot-ROM connection used to write partitions.** Rooted debugging is not required for this initial stock backup/unlock/flash route.
+The expected values, in order, are `CPH1923`, `arm64-v8a`, `28`, `true`, `true`. If they differ, investigate before continuing. ADB is separate from the boot-ROM connection used to write the phone's storage. Rooted debugging is not needed for the initial backup, unlock or installation.
 
-## 3. Enter boot ROM only after the tool is listening
+## 3. Learn the button sequence before starting a transfer
 
-Use the same sequence for every requested BROM session:
+**Boot ROM**, also called **BROM**, is the low-level connection MTKClient uses for backups and writes. Start the requested tool command first, then enter this mode:
 
-1. Start the specific tool command and leave it waiting.
-2. Keep USB attached to the phone.
+1. Leave the command waiting for the phone.
+2. Keep USB attached.
 3. Hold **Volume Up + Volume Down + Power** until the screen resets or goes black.
 4. Release **Power**; keep **both volume buttons** held for about 20 seconds.
 5. Release both volume buttons and leave USB connected.
 
-Recovery, the charging icon, or the Oppo logo is not the expected result. A black screen is necessary on this unit, but is not sufficient proof. Confirm the log identifies the expected chip, loads/accepts the DA extensions and enters the requested guarded operation.
+The expected screen is black. Recovery, the charging icon or the Oppo logo means you have not reached the required mode. A black screen alone is not proof: the tool's log must identify the expected chip, accept the DA extensions—the transfer software loaded into the phone—and start the requested operation after its checks pass. Do not continue on a failed connection.
 
-We did not need a test point, opened casing, shorted pins, a TWRP recovery image, a replacement LK, a replacement preloader or a replacement stock kernel. Do not add those steps to this route.
+This route did not require opening the phone, using a test point, shorting pins, installing TWRP, or replacing LK, the preloader or the original kernel. Do not add those steps.
 
-## 4. Read and verify your own stock partitions
+## 4. Save and verify the phone's original software
+
+Run:
 
 ```sh
 .venv/bin/python tools/device.py backup --workspace work/device
 ```
 
-Then perform the boot-ROM sequence. The command checks the chip, GPT and stock boot image, and independently reads each selected partition twice. It compares complete SHA-256 hashes, saves the first copy, and removes only the temporary second verification copy.
+Then use the button sequence in step 3. The tool checks the chip, storage layout and original boot image. It reads each selected partition—a section of the phone's storage—twice and compares complete SHA-256 hashes. It keeps the first copy and deletes only the temporary second copy used for verification.
 
-The private backup set is `seccfg`, `lk`, `lk2`, `boot`, `vbmeta`, `dtbo`, `recovery`, `vendor` and `system`, plus `backup-manifest.json`. No unlock or flash occurs in this command. The recorded stock system is 5,033,164,800 bytes and vendor 964,689,920 bytes.
+The backup contains `seccfg`, `lk`, `lk2`, `boot`, `vbmeta`, `dtbo`, `recovery`, `vendor` and `system`, plus `backup-manifest.json`, which records the files and checksums. This command does not unlock or write to the phone. The recorded original system is 5,033,164,800 bytes and vendor 964,689,920 bytes.
 
-Proceed only after `VERIFIED: backup` and a manifest recording every complete file. An incomplete file or a mismatching firmware hash is a stop. Leave all originals untouched; use a new workspace for a genuinely new backup attempt rather than overwriting evidence.
+**Continue only after `VERIFIED: backup` and a manifest recording every complete file.** Stop on an incomplete file or a firmware hash mismatch. Keep the originals untouched. If you need a new backup attempt, use a new workspace rather than overwrite the previous files.
 
-Make a separate private copy of `work/device` before the next step. Do not copy another owner's seccfg or calibration partitions into your phone.
+Make a separate private copy of `work/device` before unlocking. Never write another owner's seccfg or calibration partitions to your phone.
 
-## 5. Unlock, then independently check the result
+## 5. Unlock and check that Android still starts
+
+Run:
 
 ```sh
 .venv/bin/python tools/device.py unlock --workspace work/device
 ```
 
-Enter boot ROM again while the command is listening. The tool requires the current locked v4 seccfg to match your saved original bytes. It uses MTKClient's `seccfg('unlock', critical=False)`, reads the partition back and requires lock state **3**. It does not patch LK, preloader or the stock boot image.
+Use the button sequence while the command is waiting. The current locked v4 `seccfg` must match your saved original bytes. MTKClient uses `seccfg('unlock', critical=False)`, then reads the partition back and requires lock state **3**. It does not change LK, the preloader or the original boot image.
 
-After `VERIFIED: unlock`, wait for the tool to finish. Unplug USB, release both volume buttons and hold Power to start the phone. An **Orange State / unlocked** warning was the expected result on this unit, followed by Android. Reconnect USB and re-approve debugging if needed.
+**Wait for `VERIFIED: unlock` and for the tool to finish.** If verification fails, stop. Then unplug USB, release both volume buttons and hold Power to start the phone. The expected result is an **Orange State / unlocked** warning followed by Android. Reconnect USB and approve debugging again if needed.
 
-Do not use a “relock” command while a custom system or modified verification metadata is installed. This guide deliberately leaves the bootloader unlocked.
+Do not relock the bootloader while a custom system or modified verification metadata is installed. This guide leaves it unlocked.
 
-## 6. Download the exact GSI, not the newest-looking filename
+## 6. Download and check the exact Android 11 image
 
-Download [the pinned upstream archive](https://sourceforge.net/projects/andyyan-gsi/files/lineage-18.x/lineage-18.1-20240121-UNOFFICIAL-arm64_bgS.img.xz/download) to:
+Download [the image used in this guide](https://sourceforge.net/projects/andyyan-gsi/files/lineage-18.x/lineage-18.1-20240121-UNOFFICIAL-arm64_bgS.img.xz/download) and save it here:
 
 ```text
 work/lineage-18.1-20240121-UNOFFICIAL-arm64_bgS.img.xz
 ```
 
-Verify:
+Check its SHA-256 checksum:
 
 ```sh
 shasum -a 256 work/lineage-18.1-20240121-UNOFFICIAL-arm64_bgS.img.xz
 ```
 
-The result must be:
+It must match this exactly. Stop if it does not:
 
 ```text
 7bb7c4ebd336ad1615ce9f078d6a455e2c524d736578571ac41671b36d23415a
 ```
 
-`arm64_bgS` is the specific working upstream choice here. The A-only physical phone still uses the publisher's `b` system-as-root layout. Do not substitute `arm64_agS`, 32-bit `arm`, `a64`, vndklite, a random TWRP ZIP, or Android 12/14 based on a similar-looking name.
+Use `arm64_bgS`. This phone has one physical system partition, often called **A-only**, but needs the publisher's `b` system-as-root image layout. The letter does not mean the phone has A/B slots. Do not substitute `arm64_agS`, 32-bit `arm`, `a64`, vndklite, a random TWRP ZIP, or Android 12/14 because the name looks similar.
 
-Decompression alone yields an **Android sparse image**, not the raw ext4 image expected by this workflow. The builder expands and validates its chunk lengths before editing it.
+Unpacking the archive still leaves an **Android sparse image**, a compact storage format. The builder converts it to the raw ext4 filesystem image needed for installation and checks the lengths before editing. Do not flash the unpacked file directly with this workflow.
 
-## 7. Build all the core device fixes before the first flash
+## 7. Build the Android image with the phone's fixes
+
+Run:
 
 ```sh
 .venv/bin/python tools/build_image.py \
@@ -129,15 +150,17 @@ Decompression alone yields an **Android sparse image**, not the raw ext4 image e
   --secilc work/tools/secilc
 ```
 
-For an Intel Mac with a different Homebrew prefix, pass `--e2fsprogs "$(brew --prefix e2fsprogs)/sbin"`; that machine configuration was not the physical installation tested in this session.
+For an Intel Mac with a different Homebrew prefix, pass `--e2fsprogs "$(brew --prefix e2fsprogs)/sbin"`. We did not test the physical installation on that Mac configuration.
 
-The builder verifies the archive/vendor hashes, expands sparse ext4, expands the filesystem within the existing system partition, unshares ext4 data blocks, adds/validates `sigcont`, patches the original Keymaster helper, adds the two static overlays and the wallpaper files/initializer, preserves required labels and checks the complete filesystem.
+The builder checks the download and vendor hashes, converts the sparse image and expands its filesystem to fit the existing system partition. It separates shared ext4 file blocks before changing files. It adds and checks the `sigcont` SELinux permission, patches the Keymaster encryption helper, adds the Wi-Fi and touch-settings overlays, and includes the wallpapers and their first-start helper. It preserves required SELinux file labels and checks the complete filesystem.
 
-It produces `work/cph1923-core.img` and `work/cph1923-core.img.json`. The receipt includes its full hash and size. **Do not flash if policy compilation or the final filesystem check fails.** The core build keeps the publisher's original Google app versions; official updates and optional incorporation follow after first boot.
+The output is `work/cph1923-core.img` with `work/cph1923-core.img.json`, a receipt containing the full hash and size. **Stop if SELinux policy compilation or the final filesystem check fails. Do not install that image.**
 
-See [BUILD](BUILD.md) for every input and transformation. No direct mounted-filesystem sector editing is used.
+This core image still has the publisher's original Google app versions. Update those after the first boot; the later optional build can include those updates. [BUILD](BUILD.md) records every input and change. The tools do not edit raw storage sectors underneath a mounted filesystem.
 
-## 8. Initial flash and the explicitly approved reset
+## 8. Install Android 11 and clear the old setup
+
+This is the first installation and it will clear your data. Run:
 
 ```sh
 .venv/bin/python tools/device.py flash \
@@ -147,42 +170,44 @@ See [BUILD](BUILD.md) for every input and transformation. No direct mounted-file
   --erase-confirmation "ERASE MY CPH1923 DATA"
 ```
 
-Enter boot ROM while the command is waiting. Do not unplug or press buttons during writing or verification.
+Use the button sequence while the command is waiting. Leave USB connected and do not press buttons during writing or verification.
 
-The write path:
+The tool performs these steps:
 
-1. Rechecks chip/GPT/stock boot and the connected vendor image.
-2. Confirms your own verified backups and the current stock system match.
-3. Confirms seccfg reports the unlocked state.
-4. Prepares your own vbmeta header with flags **3**; requires `AVB0`, saves no borrowed vbmeta, and reads back the full written metadata.
-5. Writes the prepared raw system image to the single partition named `system`.
-6. Reads the complete written image back and compares SHA-256.
-7. Only then formats **`userdata`, `metadata`, `cache`** for the initial Android 9 → 11 installation.
-8. Records completion and shuts down the DA connection.
+1. Rechecks the chip, GPT storage layout, original boot image and connected vendor firmware.
+2. Checks that your verified backups match the current original system.
+3. Confirms that seccfg reports the unlocked state.
+4. Prepares your own `vbmeta` verification header with flags **3**. It requires `AVB0`, uses no borrowed vbmeta, and reads back all written metadata.
+5. Writes the prepared raw image to the single partition named `system`.
+6. Reads the complete written image back and compares its SHA-256 checksum.
+7. Only after that passes, formats **`userdata`, `metadata`, `cache`** for the first Android 9 → 11 installation.
+8. Records completion and closes the DA transfer connection.
 
-The script leaves `boot`, `vendor`, LK, recovery, DTBO, TEE, radio, calibration and preloader partitions untouched. There is no repartitioning, no `system_a`/`system_b` write, and no flashing of another phone's stock image.
+The script leaves `boot`, `vendor`, LK, recovery, DTBO, TEE, radio, calibration and preloader partitions untouched. It does not repartition storage, write `system_a`/`system_b`, or install another phone's original firmware.
 
-If a write/readback fails, the tool attempts to restore the original system and vbmeta from your own verified backup and verifies that restoration. A disconnected cable can prevent rollback; data already erased cannot be recovered by restoring firmware. See [RECOVERY](RECOVERY.md).
+If a write or readback fails, the tool attempts to restore the original system and vbmeta from your verified backup, then checks that restoration. A disconnected cable can prevent recovery. Restoring firmware cannot recover data that has already been erased. Follow [RECOVERY](RECOVERY.md) if a step fails.
 
-Proceed only when the result file says `verified: true`. In this session, an `Operation timed out` message sometimes appeared only during the final USB shutdown after successful verification. That is different from a write/read/checksum failure. Read the saved result, phase and actual process exit rather than interpreting one line in isolation.
+**Continue only when the saved result says `verified: true`.** An `Operation timed out` message sometimes appeared during final USB shutdown after successful verification. Check the saved result, transfer stage and process exit: a shutdown timeout after success is different from a write, read or checksum failure.
 
-## 9. First boot: wait for the right evidence
+## 9. Start the phone and finish setup
 
 After the tool has finished:
 
 1. Unplug USB and release both volume buttons.
 2. Hold Power until the phone starts.
 3. Reconnect USB and let the orange unlocked warning pass.
-4. Allow up to approximately three minutes for first boot before declaring a logo stall.
-5. Finish setup and any PIN/Wi-Fi/Google sign-in choices on the phone. Do not put credentials into logs or issue reports.
+4. Allow up to approximately three minutes for the first boot.
+5. Finish setup, including your PIN, Wi-Fi and Google sign-in choices, on the phone. Keep credentials out of logs and issue reports.
 
-The expected result is **LineageOS setup**, then the home screen. If ColorOS recovery returns, use the troubleshooting/log path. Do not repeat data formats indefinitely or assume an old log from a previous Android build describes the current boot.
+The expected result is **LineageOS setup**, then the home screen. If the phone stays at the logo after that wait or returns to ColorOS recovery, follow [TROUBLESHOOTING](TROUBLESHOOTING.md). Do not repeatedly format data or use a log from an earlier Android build to explain the current boot.
 
-The custom ROM presents a generic `Phh-Treble with GApps` name. Confirm the OS by its release and SDK, not that generic product name.
+The phone may show the generic name `Phh-Treble with GApps`. Check the Android version and SDK in the next step to confirm what is installed.
 
-## 10. Validate the basics before restoring dozens of apps
+## 10. Check Android, colors, Wi-Fi and the defaults
 
-Enable USB debugging and approve your Mac again after the initial reset. Wait several seconds for USB enumeration; an instant empty `adb devices` result is not proof of a broken phone.
+Enable USB debugging and approve your Mac again after the reset. Give the Mac several seconds to detect the phone; one immediate empty `adb devices` result does not prove the phone is broken.
+
+Run these checks. The comments show the expected results:
 
 ```sh
 adb shell getprop ro.build.version.release       # 11
@@ -196,11 +221,13 @@ adb shell wm density                            # Physical density: 320
 adb shell settings get system font_scale         # 1.0
 ```
 
-If an old user density override is present, `adb shell wm density reset` removes that override only. It does **not** factory-wipe the phone. The remaining physical density should still be 320.
+Stop and investigate if these do not match before restoring lots of apps. `Enforcing` is the expected global SELinux mode; the upstream GSI still contains permissive superuser domains, as explained in [VALIDATION](VALIDATION.md).
 
-Check colorful icons/photos on the physical panel. A screenshot cannot prove the absence of a panel/display-path haze. The owner reported normal colors on this Android 11 configuration.
+If an old user scale override is present, `adb shell wm density reset` removes only that override. It does **not** factory-wipe the phone. The remaining physical density—the interface scale supplied by the system—should still be 320.
 
-Connect to a mixed WPA2/WPA3 network if that was your previous problem:
+Check colorful icons and photos on the phone itself. A screenshot cannot show whether its physical display is hazy. Colors looked normal on the owner's Android 11 setup.
+
+If you use a mixed WPA2/WPA3 network, connect to it and check the Wi-Fi configuration:
 
 ```sh
 adb shell cmd overlay list com.android.wifi.resources
@@ -208,9 +235,9 @@ adb shell cmd overlay lookup com.android.wifi.resources \
   com.android.wifi.resources:bool/config_wifiSaeUpgradeEnabled
 ```
 
-The overlay should be enabled and the value `false`. Verify an actual connection and validated internet. A WPA3-only network is a different case and is not fixed by this overlay.
+The configuration overlay should be enabled and the value should be `false`. Confirm the phone actually connects and has working internet. This change addresses the mixed-network problem through WPA2; it does not add WPA3-only support.
 
-Check defaults:
+Check touch and wallpaper defaults:
 
 ```sh
 adb shell cmd overlay lookup com.android.providers.settings \
@@ -221,32 +248,32 @@ adb shell getprop ro.config.wallpaper
 adb shell getprop sys.phh.wallpaper_defaults
 ```
 
-The home property should reference `/system/etc/cph-wallpaper-defaults/wallpaper`. A truly fresh initial setup should report `initialized`; an existing wallpaper configuration should report `preserved`. Normal setup/backup restoration can subsequently replace wallpaper choices.
+The home wallpaper property should reference `/system/etc/cph-wallpaper-defaults/wallpaper`. A fresh setup should report `initialized`; a setup with existing wallpaper choices should report `preserved`. Normal setup or backup restoration can replace those choices afterward.
 
-## 11. Google sign-in and official app updates
+## 11. Update Play Store and the bundled apps
 
-Use actual Wi-Fi internet and sign in privately to Play Store. Our temporary USB internet workaround validated connectivity but the old Google sign-in UI still said no network; the native Wi-Fi fix removed the practical blocker.
+Connect through working Wi-Fi and sign in to Play Store privately on the phone. Our temporary USB internet connection worked, but the old Google sign-in screen still reported no network. The Wi-Fi fix allowed sign-in to complete.
 
-The upstream Store initially reported “no updates” despite obsolete apps. Its service was returning errors. We used the Store's own **Settings → About / Play Store version → Update** control; the older UI was a simple tap on the version row. It downloaded a newer Store, then a further current Store update.
+The original Play Store said “no updates” even though the apps were old, and its service returned errors. First update the Store itself using **Settings → About / Play Store version → Update**. In the older interface, tapping the version row started the update. Our phone downloaded a newer Store and then another current Store update.
 
-After the newer Store is running, open **Manage apps & device → Updates → Update all**. Let installation finish, not just download. Open Android System WebView's own Store page too; it still offered Update separately in our session. Play services updated automatically. Verify that Manage apps & device reports **All apps up to date**.
+Once the newer Store is running, open **Manage apps & device → Updates → Update all**. Wait for installation to finish. Also open Android System WebView's Store page; it offered an additional Update in our session. Play services updated automatically. Confirm that Manage apps & device says **All apps up to date**.
 
-On 2 GB RAM, large app processing and bulk backup restoration made controls slow and downloads look pending. Waiting for real install progress was preferable to interrupting active compilation. Do not mistake a pending restored launcher icon for a ROM display failure. The old framework is still Android 11 even when app versions are current.
+Expect delays while this 2 GB phone installs large apps or restores a backup. Follow actual installation progress before interrupting it. A pending restored launcher icon does not mean the display is broken. The phone will still load apps slowly and have limited multitasking, whichever Android version it runs.
 
-If you want the downloaded versions to survive a reset, follow the **optional local APK integration** procedure in [BUILD](BUILD.md). A Store update in `/data/app` alone is not a ROM default. Do not upload those proprietary binaries as your own GitHub release.
+These are the newest versions Play Store offers for this phone. Android itself remains version 11. If you want the updates to remain after a reset, follow [the optional app-integration steps](BUILD.md). Those steps copy the APK app files into your local system image. An update left only in `/data/app` disappears after a reset. Do not upload Google's proprietary app files as your own GitHub release.
 
-## 12. Return temporary maintenance settings to normal
+## 12. Turn off temporary maintenance access
 
-The backup/unlock/initial flash route does not require rooted Android debugging. The optional export/integration workflow may use the GSI's normal **Developer options → Rooted debugging** switch. Enable it through the normal UI only when needed; turn that switch off when finished and use `adb unroot`. Leave USB debugging on if you still need final checks.
+The initial backup, unlock and installation do not require rooted Android debugging. The optional app export and integration may use **Developer options → Rooted debugging**, which gives maintenance tools elevated access. Turn it on through the normal phone settings only when needed. When finished, turn that switch off and use `adb unroot`. Keep ordinary USB debugging on if you still need final checks.
 
-Do **not** turn off the Developer-options master switch or delete its enabled setting while trying to preserve debugging. In our session, changing that setting while the screen was active contributed to losing the debugging interface and required re-enabling it on the phone.
+Do **not** turn off the Developer-options master switch or delete its enabled setting while trying to keep debugging available. Changing that setting while the screen was active contributed to losing our debugging connection, which had to be enabled again on the phone.
 
-Restore any temporary stay-awake preference to its prior value. The owner's original value was 0. Never guess that every reader's original setting is the same.
+Restore any temporary stay-awake preference to its previous value. The owner's original value was 0; another reader's may differ.
 
-## 13. What a factory reset means afterward
+## 13. Understand what remains after a factory reset
 
-A normal data reset removes personal apps, settings, accounts and downloaded `/data/app` updates. It does not erase these system-resident assets, overlays or early-init defaults. The native density and system touch defaults therefore come from the customized system image; the first-start wallpaper initializer can recreate both wallpapers when no configuration exists.
+A normal data reset removes personal apps, settings, accounts and updates stored in `/data/app`. It does not erase the files and settings built into the system image. That is where the smaller interface scale and touch defaults are stored. The first-start wallpaper helper can recreate both wallpapers when there are no existing choices.
 
-The owner's final local image also included the 16 updated Google packages. A reset of the **core** image built here returns the original upstream app versions unless you completed the optional app-integration build. Gboard's per-user sound setting and arbitrary third-party app preferences are not system defaults.
+The owner's final local image also contained the 16 updated Google packages. Resetting the **core** image built in step 7 returns the publisher's original app versions unless you completed the optional build with updated apps. Gboard's per-user sound setting and other apps' personal preferences are not system defaults.
 
-We tested initialization on an empty directory and verified it did not overwrite existing choices. We did not perform another factory reset on the completed personal phone. See the validation boundary and the exact evidence before treating this as a guarantee for a different firmware.
+We tested the wallpaper helper with an empty directory and checked that it preserved existing choices. We did **not** factory-reset the completed phone again. Read [what was tested](VALIDATION.md) and the recorded evidence before assuming the same result on different firmware.

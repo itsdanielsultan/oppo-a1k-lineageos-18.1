@@ -1,14 +1,14 @@
-# Release contents, privacy and redistribution
+# Downloads: what is included and what you build yourself
 
 ## The public resource is a device-fix toolkit
 
-The package contains documentation, source diffs, guarded Python/shell tools, two configuration-only overlay APKs with their sources, self-generated wallpapers/native crop assets, selected redacted evidence, and offline tests.
+The download contains the full guide, code changes, tools that check the phone before writing, two small settings packages with their source files, generated wallpapers and their saved crops, logs with private details removed, and software tests.
 
 It does **not** contain Google's application APKs, a mirrored GApps-bearing system image, stock Oppo partition binaries, the owner's APK export, raw device logs, account databases, serial/IMEI, Wi-Fi identifiers, credentials or private signing keys.
 
 The owner's final personally used raw image remains local. Its published SHA-256 identifies the observed tested result; it is not a download promise. The core builder lets a reader obtain the original upstream archive themselves and apply the documented fixes. Official app updates and optional incorporation are performed locally from that reader's phone/account.
 
-## Why the exact final Google-bearing image is not mirrored
+## Why my finished image with Google apps is not uploaded
 
 Google distinguishes AOSP from its proprietary apps. Its [Android Developers explanation](https://android-developers.googleblog.com/2009/09/note-on-google-apps-for-android.html) says those apps are not licensed for inclusion in developer-built system images; its [GMS page](https://www.android.com/intl/en_au/gms/) explains the separate licensing. The [Open GApps project](https://github.com/opengapps/opengapps#license) likewise distinguishes its open build system from the component licenses and restricts mirroring its prebuilt packages.
 
@@ -28,7 +28,7 @@ The public artwork is labeled as generated wallpaper artwork, not a photograph t
 
 The investigation had phone screenshots and a boot-stall photo. Some screens showed phone/account/network identifiers, notifications, installed personal apps or restoration state. Those are not automatically publishable just because a screenshot exists. This package uses the artwork and sanitized technical evidence; do not add raw screenshots/EXIF-bearing photos without reviewing them first.
 
-## Hardware and software evidence boundaries
+## Which tests cover the finished phone and the public tools
 
 The final physical system was fully read back, the phone booted, and the live/default checks passed. An empty-directory reset-initialization test passed. A complete reset of the finished personal setup was not performed. The consolidated public wrapper is offline-tested but has not been used for a second cold install. Neither limitation should disappear in a Reddit/XDA announcement.
 

@@ -1,6 +1,6 @@
-# What was actually verified
+# What we tested, and what still needs checking
 
-The evidence concerns **one physical CPH1923** and its recorded firmware. It is a useful successful case, not a compatibility certification.
+These results come from **one CPH1923** with the original firmware recorded in this repository. The phone checks, separate software tests and untested features are listed below so you can see exactly what supports the guide.
 
 ## Live hardware observations
 

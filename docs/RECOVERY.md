@@ -1,6 +1,8 @@
-# Recovery and rollback boundaries
+# Recovery: restore your own original software
 
-## Keep the working rescue path before the first write
+Read this before the first installation. **Rollback** means restoring the previous system after a failed write. It depends on your verified backups and a working USB connection. It cannot recover personal data that has already been erased.
+
+## Keep the original hardware software and make backups first
 
 The tested phone retained stock preloader, LK, kernel, vendor, recovery, DTBO, TEE and radio/calibration partitions. Only the unlock configuration, custom-ROM vbmeta metadata and system image were changed for the main upgrade; the initial installation also cleared the three approved data partitions.
 
