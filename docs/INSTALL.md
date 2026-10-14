@@ -252,9 +252,11 @@ adb shell getprop sys.phh.wallpaper_defaults
 
 The home wallpaper property should reference `/system/etc/cph-wallpaper-defaults/wallpaper`. A fresh setup should report `initialized`; a setup with existing wallpaper choices should report `preserved`. Normal setup or backup restoration can replace those choices afterward.
 
-## 11. Update Play Store and the bundled apps
+## 11. Register with Google if needed, then update Play Store and the bundled apps
 
-The steps below worked during the original setup. On October 13, 2026, the same phone's Play Store instead showed a Play Protect certification block. Google accepted custom-ROM device registration, but the block remained after a restart and cache refresh. See [the current validation limits](VALIDATION.md#october-13-2026-follow-up); do not assume sign-in, updates or certification will work on every installation.
+If Google apps or Play Store show **This device isn't Play Protect certified**, complete [the custom-ROM device-registration steps](TROUBLESHOOTING.md#google-play-is-blocked-by-a-certification-warning) before continuing. They explain how to read your own Google Services Framework ID, register it on Google's official page, and reset only the Store's local data if access remains blocked. Do not use the owner's ID or post your own ID publicly.
+
+The app-update steps below worked during the original setup. A later certification block appeared on October 13, 2026; registration followed by a Store-only data reset restored signed-in catalogue access on October 14. Downloads/updates were not retested after that recovery, and formal certification remains unverified. See [the follow-up validation](VALIDATION.md#october-14-2026-google-play-access-recovery); do not assume sign-in, updates or certification will work on every installation.
 
 Connect through working Wi-Fi and sign in to Play Store privately on the phone. Our temporary USB internet connection worked, but the old Google sign-in screen still reported no network. The Wi-Fi fix allowed sign-in to complete.
 

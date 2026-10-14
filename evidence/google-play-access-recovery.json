@@ -1,0 +1,55 @@
+{
+  "verification_date": "2026-10-14",
+  "model": "CPH1923",
+  "android": "11",
+  "units_tested": 1,
+  "symptom": "Play Store access blocked by This device isn't Play Protect certified",
+  "registration": {
+    "confirmation_date": "2026-10-13",
+    "destination": "https://www.google.com/android/uncertified/",
+    "gsf_id_read_from_installed_database": true,
+    "google_confirmed_device_registered": true,
+    "private_id_included": false
+  },
+  "before_store_data_reset": {
+    "registration_and_reboot_restored_access": false,
+    "cache_refresh_restored_access": false,
+    "same_version_reinstall_restored_access": false,
+    "store_version": "53.5.37-29 [0] [PR] 994794998",
+    "reinstalled_apk_components": 5,
+    "installed_apk_checksums_matched_backup": true,
+    "validated_wifi_observed": true,
+    "device_clock_matched_reference_clock": true
+  },
+  "store_data_reset": {
+    "owner_approved": true,
+    "package": "com.android.vending",
+    "method": "Settings > Apps & notifications > Google Play Store > Storage & cache > Clear storage",
+    "storage_ui_reported_user_data_bytes": 0,
+    "storage_ui_reported_cache_bytes": 0,
+    "google_play_services_data_cleared": false,
+    "gsf_data_cleared": false,
+    "google_account_removed": false,
+    "installed_apps_removed": false,
+    "os_reflashed": false,
+    "factory_reset_performed": false
+  },
+  "observed_after_reset": {
+    "signed_in_catalogue_opened": true,
+    "installed_app_listings_visible": true,
+    "account_menu_opened": true,
+    "blocking_screen_absent_during_these_checks": true
+  },
+  "limits": {
+    "new_app_download_test_completed": false,
+    "app_update_test_completed_after_recovery": false,
+    "formal_play_protect_certification_status_checked_after_recovery": false,
+    "play_integrity_test_completed": false,
+    "necessity_of_each_prior_step_isolated": false,
+    "purchase_protection_restoration_verified": false,
+    "parental_control_restoration_verified": false
+  },
+  "cleanup": {
+    "stay_on_while_plugged_in_restored": "0"
+  }
+}

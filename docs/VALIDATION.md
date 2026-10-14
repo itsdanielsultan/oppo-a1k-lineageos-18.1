@@ -17,7 +17,8 @@ These results come from **one CPH1923** with the original firmware recorded in t
 | Physical colors | Owner comparison/feedback | Reported perfectly fine on Android 11 |
 | Maximum brightness adjustment, October 13, 2026 | PHH setting + property readback + owner feedback | Alternative scale enabled; `0` / `-1` → `1` / `2047`; owner confirmed a noticeably brighter screen |
 | Mixed-mode Wi-Fi | Live resource lookup + network state | SAE upgrade false, connected and internet validated |
-| Play Store, original setup | Owner sign-in + Store UI | Sign-in complete; All apps up to date then; later certification block recorded below |
+| Play Store, original setup | Owner sign-in + Store UI | Sign-in complete; All apps up to date then; later certification block and recovery recorded below |
+| Play Store access recovery, October 14, 2026 | Google registration confirmation + Store storage readback + live Store UI | After a Store-only data reset, signed-in catalogue and account menu opened; certification and new downloads/updates not rechecked |
 | WebView | Live update-service state | Valid active Google WebView 153, completed relro setup |
 | 16 bundled versions | System package records | Expected version codes at system destinations |
 | Tap defaults | Overlay lookups + current settings | Haptics false/off, sounds true/on, charging vibration false/off |
@@ -41,6 +42,16 @@ The owner's maximum-brightness complaint was checked on the same Android 11 phon
 This verifies the setting readback and the owner's physical improvement report on one phone. It does not establish measured nits, equivalence to stock Oppo luminance, reboot persistence, factory-reset behavior or inclusion in a rebuilt system image. The builder and image hashes above are unchanged. [Sanitized brightness evidence](../evidence/brightness-verification.json) records the before/after values and these limits.
 
 During the same follow-up, Play Store showed **This device isn't Play Protect certified**. Google's custom-ROM registration page confirmed that the device was registered, but the Store remained blocked after a reboot, cache refresh and app/service restart. The original successful sign-in/update observations remain historical results, not a claim of current Store access. Play Protect certification and Play Integrity were not established. No private device IDs or account information are included here.
+
+## October 14, 2026 Google Play access recovery
+
+Reinstalling the existing Play Store **53.5.37-29 [0] [PR] 994794998** and all five APK components succeeded. Every installed file's hash matched the preserved copy, but the certification block still appeared. The phone's clock and validated Wi-Fi connection were also checked; these checks did not identify a clock or connectivity fault.
+
+After the owner approved a local-data reset, **Settings → Apps & notifications → Google Play Store → Storage & cache → Clear storage** was used. Settings then reported Store user data and cache as `0 B`. Reopening the Store displayed its signed-in catalogue, installed-app listings and account menu instead of the blocking screen. The existing Google account and installed apps remained; Google Play services and GSF data were not cleared.
+
+This establishes restored catalogue access after registration and the Store-only reset on the tested installation. It does not isolate which earlier steps were necessary, prove a new download/update succeeds, or establish formal Play Protect certification or Play Integrity. The final certification-menu and download/update checks were not completed. No OS reflash or factory reset was performed. Temporary stay-awake was restored to `0` afterward.
+
+Follow the [registration and Store-recovery instructions](TROUBLESHOOTING.md#google-play-is-blocked-by-a-certification-warning) if the warning blocks setup. The [sanitized recovery evidence](../evidence/google-play-access-recovery.json) omits the GSF ID, USB serial and account details. Purchase protection and parental-control preferences need review after resetting Store data; their restoration was not verified in this session.
 
 ## Reset-default evidence without erasing the completed setup
 
@@ -78,6 +89,7 @@ The unlocked/custom/root-capable image is not equivalent to locked official Oppo
 * [Tested hardware/profile and partition boundaries](../evidence/tested-profile.json)
 * [Sanitized live check results](../evidence/live-verification.json)
 * [October 13 brightness adjustment](../evidence/brightness-verification.json)
+* [October 14 Google Play access recovery](../evidence/google-play-access-recovery.json)
 * [Observed bundled package versions](../evidence/observed-app-versions.json)
 * [Wallpaper defaults result](../evidence/wallpaper-defaults.json)
 * [Keymaster excerpt](../evidence/keymaster-redacted-excerpt.txt)

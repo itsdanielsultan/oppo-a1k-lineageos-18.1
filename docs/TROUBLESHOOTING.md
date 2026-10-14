@@ -25,6 +25,7 @@ Find the problem in the table, then check the result file and log for that step.
 | WPA3-only network still cannot connect | Outside this overlay's capability | Use a compatible WPA2/mixed network; do not claim the fix adds WPA3 |
 | USB VPN validated but old Google sign-in says no network | Matches the temporary reverse-tethering limitation | Fix native Wi-Fi; the final route does not need gnirehtet |
 | Old Play Store says no updates | Could be an obsolete update service, as here | Use its own version-update control first, then recheck from the newer Store |
+| Google apps or Store show “This device isn't Play Protect certified” | Google is blocking access on this custom installation | Follow [Google's custom-ROM registration route and the tested Store recovery](#google-play-is-blocked-by-a-certification-warning); do not relock this custom system |
 | WebView not in Update all but its listing offers Update | Observed separately here | Update it from its own official Store page and check the active provider |
 | Pending/restoring launcher icons; settings slow | Bulk restoration/app processing on a 2 GB phone | Let actual install/compile progress finish; stop assuming pending means already installed |
 | Density changes disappear on reset | Likely only a user override | Inspect native `ro.sf.lcd_density`; remove just the override and verify physical 320 |
@@ -32,6 +33,71 @@ Find the problem in the table, then check the result file and log for that step.
 | Initializer reports `preserved` | At least one existing wallpaper file/configuration was found | Expected on an already configured phone; it deliberately does not overwrite the user's choices |
 | Google app version disappears on reset | Likely update only in `/data/app` | Check the actual system/bundled package record and complete APK split/native integration |
 | Rooted debugging cannot be enabled by an ADB setting write | Root service deliberately checks caller identity | Use the normal phone UI; do not bypass UID checks or component permissions |
+
+## Google Play is blocked by a certification warning
+
+For this custom ROM, Google's [uncertified-device notice](https://www.google.com/android/uncertified/warningauto) directs users to register their own **Google Services Framework Android ID (GSF ID)**. This is an exception route for using Google apps. It does not make this GSI an officially certified Oppo build or establish a Play Integrity pass.
+
+### 1. Read your own GSF ID privately
+
+Use the phone's existing Google Services Framework installation. The ID is **not** `Settings.Secure.ANDROID_ID`, the USB serial, or an IMEI. Do not publish it, copy another phone's ID, or upload the GSF database.
+
+On this build, the normal shell could not read the GSF provider. With the phone unlocked and your own Mac authorized for USB debugging, temporarily enable **Settings → System → Advanced → Developer options → Rooted debugging** through the normal phone UI. Then, on the Mac:
+
+```sh
+adb devices -l
+adb root
+adb wait-for-device
+adb shell
+```
+
+Allow the USB connection to return if it briefly disconnects. Inside the phone's shell, run `id`; it must report `uid=0(root)` before the database read. Then run this read-only query in that same phone shell:
+
+```sh
+sqlite3 -readonly /data/user/$(cmd activity get-current-user)/com.google.android.gsf/databases/gservices.db \
+  "SELECT value FROM main WHERE name = 'android_id';"
+exit
+```
+
+Copy only the returned decimal value, privately. If access is denied or no ID is returned, stop and investigate the current installation; do not clear GSF storage to generate another ID or bypass the rooted-debugging checks.
+
+Turn **Rooted debugging** off again on the phone immediately after reading the ID. Back on the Mac, run:
+
+```sh
+adb unroot
+adb wait-for-device
+adb shell id
+```
+
+After reconnection, the last command should report the ordinary shell UID `2000`. Restore any temporary stay-awake preference to its previous value.
+
+### 2. Register with Google, then restart
+
+1. Open [Google's official device-registration page](https://www.google.com/android/uncertified/) and sign in to your Google account.
+2. Paste your GSF ID into **Google Services Framework Android ID**. `phonelink_setup`, if displayed beside the field, is an icon label rather than part of the ID.
+3. Complete Google's CAPTCHA and select **Register**.
+4. Confirm **Device registered** or that your ID appears in the registered-device list. A button click alone is not confirmation.
+5. Restart the phone, reconnect to working Wi-Fi, and reopen Play Store.
+
+Google's public registration instructions do not promise a processing deadline or formal certification. If the Store opens, continue with setup and app updates; a data reset is unnecessary in that case.
+
+### 3. If the Store still blocks access, reset only its local data
+
+Registration, rebooting, cache clearing and reinstalling the same Store version were insufficient on this phone. On October 14, 2026, the additional **Play Store-only** data reset below restored signed-in catalogue access.
+
+This deletes the Store's local databases and preferences. Review the warning before proceeding: purchase/password protection and parental controls may need to be restored, and Google may ask you to accept its terms again. Installed apps and the device's Google account remain. This is separate from clearing **Google Play services** or **Google Services Framework** data, which was not needed for this recovery.
+
+1. Open **Settings → Apps & notifications → Google Play Store**. Use **See all apps** if necessary.
+2. Select **Storage & cache → Clear storage**.
+3. Read **Delete app data?** and confirm only if you accept the Store-local reset.
+4. Reopen Play Store. Complete any account or terms prompts yourself, and review purchase protection and parental controls before further use.
+5. Verify the catalogue loads, then separately test an app download or update.
+
+These steps follow [Google's Store troubleshooting](https://support.google.com/googleplay/answer/14121800?hl=en). Do not disable Play Protect scanning, relock the bootloader with this custom system, or factory-reset the phone as part of this procedure.
+
+### What was actually verified
+
+Google confirmed registration on October 13. After the Store-only reset on October 14, its signed-in catalogue and account menu opened without the blocking screen. We did **not** finish checking a new download/update or the Store's **Settings → About → Play Protect certification** result afterward. Working access, certification and Play Integrity are separate results. The [sanitized recovery record](../evidence/google-play-access-recovery.json) contains no private IDs or account information.
 
 ## Maximum brightness is too low
 
