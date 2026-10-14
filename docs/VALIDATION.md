@@ -15,8 +15,9 @@ These results come from **one CPH1923** with the original firmware recorded in t
 | Native density | Property + cleared override + `wm density` | Physical 320 |
 | Font scale | Settings read | 1.0 |
 | Physical colors | Owner comparison/feedback | Reported perfectly fine on Android 11 |
+| Maximum brightness adjustment, October 13, 2026 | PHH setting + property readback + owner feedback | Alternative scale enabled; `0` / `-1` → `1` / `2047`; owner confirmed a noticeably brighter screen |
 | Mixed-mode Wi-Fi | Live resource lookup + network state | SAE upgrade false, connected and internet validated |
-| Play Store | Owner sign-in + Store UI | Sign-in complete; All apps up to date |
+| Play Store, original setup | Owner sign-in + Store UI | Sign-in complete; All apps up to date then; later certification block recorded below |
 | WebView | Live update-service state | Valid active Google WebView 153, completed relro setup |
 | 16 bundled versions | System package records | Expected version codes at system destinations |
 | Tap defaults | Overlay lookups + current settings | Haptics false/off, sounds true/on, charging vibration false/off |
@@ -32,6 +33,14 @@ The final wallpaper/system readback was the complete **5,033,164,800-byte** imag
 The preceding default-app image was also fully verified, SHA-256 `8bf498db72417cdf2584795ef5de673a260e43c848cf87f25992915954a46032`. Later default/wallpaper updates did not format user data.
 
 The source session's first Android 14 basic checks detected two camera devices, but that is **not** a completed Android 11 camera-function test. Do not turn device detection from an earlier build into a final feature claim.
+
+## October 13, 2026 follow-up
+
+The owner's maximum-brightness complaint was checked on the same Android 11 phone. Before the adjustment, `persist.sys.phh.backlight.scale` was `0`, `persist.sys.qcom-brightness` was `-1`, and manual brightness was already `255`. Enabling **Settings → Phh Treble Settings → Misc features → Force alternative backlight scale** changed the first two properties to `1` / `2047`. The installed handler was inspected and uses the device's reported backlight maximum. Brightness was refreshed from `255` to `254` and back to `255`, and the owner answered that it was brighter. The linear-slider option was left unchanged.
+
+This verifies the setting readback and the owner's physical improvement report on one phone. It does not establish measured nits, equivalence to stock Oppo luminance, reboot persistence, factory-reset behavior or inclusion in a rebuilt system image. The builder and image hashes above are unchanged. [Sanitized brightness evidence](../evidence/brightness-verification.json) records the before/after values and these limits.
+
+During the same follow-up, Play Store showed **This device isn't Play Protect certified**. Google's custom-ROM registration page confirmed that the device was registered, but the Store remained blocked after a reboot, cache refresh and app/service restart. The original successful sign-in/update observations remain historical results, not a claim of current Store access. Play Protect certification and Play Integrity were not established. No private device IDs or account information are included here.
 
 ## Reset-default evidence without erasing the completed setup
 
@@ -68,6 +77,7 @@ The unlocked/custom/root-capable image is not equivalent to locked official Oppo
 
 * [Tested hardware/profile and partition boundaries](../evidence/tested-profile.json)
 * [Sanitized live check results](../evidence/live-verification.json)
+* [October 13 brightness adjustment](../evidence/brightness-verification.json)
 * [Observed bundled package versions](../evidence/observed-app-versions.json)
 * [Wallpaper defaults result](../evidence/wallpaper-defaults.json)
 * [Keymaster excerpt](../evidence/keymaster-redacted-excerpt.txt)

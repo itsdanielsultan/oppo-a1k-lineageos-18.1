@@ -18,6 +18,7 @@ Find the problem in the table, then check the result file and log for that step.
 | Write or checksum mismatch | Image integrity has not passed | Leave the cable attached for the guarded rollback, inspect result/log; do not tell the reader to power up mid-write |
 | USB timeout only after verified completion and shutdown | May be the observed close/disconnect behavior | Confirm result `verified: true`/complete checksum and that the writer exited before normal boot |
 | Android 14 photos/icons wash out after motion stops | Similar to the observed graphics problem | Do not ship the failed color tweaks as fixes; use the documented Android 11 path for this configuration |
+| Maximum brightness is too dim on this Android 11 build | The normal brightness setting may already be at maximum while the backlight scale is mismatched | Try the [tested PHH backlight-scale adjustment](#maximum-brightness-is-too-low) and check the physical screen |
 | Repeated TEE upgrade success then `vold begin -62` | The fresh Android 11 Keymaster version loop | Verify all four VNDK28 soft/puresoft wrappers are included in the existing fixSPL processing |
 | `Failed to resolve permission sigcont` | Platform/vendor CIL mismatch | Apply the precise ordered process-class patch and compile against the actual vendor/mapping policies |
 | PSK profile becomes SAE and cannot be saved | The observed mixed-mode Wi-Fi failure | Confirm the static Wi-Fi overlay is enabled and its SAE-upgrade resource is false |
@@ -31,6 +32,30 @@ Find the problem in the table, then check the result file and log for that step.
 | Initializer reports `preserved` | At least one existing wallpaper file/configuration was found | Expected on an already configured phone; it deliberately does not overwrite the user's choices |
 | Google app version disappears on reset | Likely update only in `/data/app` | Check the actual system/bundled package record and complete APK split/native integration |
 | Rooted debugging cannot be enabled by an ADB setting write | Root service deliberately checks caller identity | Use the normal phone UI; do not bypass UID checks or component permissions |
+
+## Maximum brightness is too low
+
+On October 13, 2026, the tested CPH1923 running this Android 11 build was still too dim with manual brightness already at `255` (maximum). Enabling PHH's alternative backlight scale made the screen noticeably brighter, as confirmed by the owner.
+
+1. Open **Settings → Phh Treble Settings → Misc features**.
+2. Under **Backlight**, enable **Force alternative backlight scale**.
+3. Move the normal brightness slider slightly down and back to maximum. In our check, the setting was refreshed from `255` to `254` and back to `255`.
+4. Check the phone's physical screen. A screenshot cannot establish its brightness.
+
+Optional read-only checks over an already authorized ADB connection:
+
+```sh
+adb shell getprop persist.sys.phh.backlight.scale
+adb shell getprop persist.sys.qcom-brightness
+adb shell settings get system screen_brightness
+adb shell settings get system screen_brightness_mode
+```
+
+On this phone, the first two values changed from `0` / `-1` to `1` / `2047`. The last two were `255` / `0`, meaning maximum manual brightness. The installed PHH handler reads the device's reported backlight maximum and selected `2047`; do not copy that number blindly to another device. Despite the property's `qcom` name, this result was observed on the tested MediaTek-based Oppo. **Use linear screen brightness slider** was left unchanged. Rooted debugging, reflashing and a data reset were not needed for this adjustment.
+
+To undo, disable **Force alternative backlight scale** and move the brightness slider again. The installed handler restores `persist.sys.qcom-brightness` to `-1` when the option is disabled; this rollback path was inspected in the handler, rather than physically retested after the successful adjustment.
+
+This is a setting change on the existing installation, not a new image build or an increase beyond the panel's reported range. Brightness was not measured in nits or compared instrumentally with stock firmware. Reboot persistence and factory-reset behavior were not tested after this change; do not assume the image builder applies it or that it survives a reset. See the [sanitized brightness check](../evidence/brightness-verification.json) and [upstream sources](SOURCES.md).
 
 ## Useful read-only checks
 

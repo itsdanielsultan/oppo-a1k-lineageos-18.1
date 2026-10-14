@@ -1,0 +1,43 @@
+{
+  "verification_date": "2026-10-13",
+  "model": "CPH1923",
+  "android": "11",
+  "units_tested": 1,
+  "symptom": "Maximum manual brightness was dimmer than the owner remembered before the ROM change",
+  "before": {
+    "persist.sys.phh.backlight.scale": "0",
+    "persist.sys.qcom-brightness": "-1",
+    "screen_brightness": "255",
+    "screen_brightness_mode": "0"
+  },
+  "change": {
+    "setting_path": "Settings > Phh Treble Settings > Misc features > Backlight > Force alternative backlight scale",
+    "enabled": true,
+    "installed_handler_inspected": true,
+    "maximum_source": "The installed PHH handler reads the device's reported backlight maximum",
+    "brightness_refresh": [255, 254, 255],
+    "linear_slider_setting_changed": false,
+    "rooted_debugging_required_for_brightness_adjustment": false,
+    "system_image_rebuilt": false,
+    "data_reset_performed": false
+  },
+  "after": {
+    "persist.sys.phh.backlight.scale": "1",
+    "persist.sys.qcom-brightness": "2047",
+    "screen_brightness": "255",
+    "screen_brightness_mode": "0"
+  },
+  "physical_result": {
+    "evidence_type": "Owner feedback while viewing the phone at maximum brightness",
+    "owner_confirmation": "Yes, it's brighter now",
+    "instrumented_luminance_measurement": false,
+    "stock_luminance_equivalence_established": false
+  },
+  "limitations": {
+    "reboot_persistence_tested_after_change": false,
+    "factory_reset_tested_after_change": false,
+    "builder_applies_this_setting": false,
+    "physical_rollback_tested_after_change": false
+  },
+  "rollback": "Disable Force alternative backlight scale and refresh the brightness slider; the inspected handler restores persist.sys.qcom-brightness to -1"
+}

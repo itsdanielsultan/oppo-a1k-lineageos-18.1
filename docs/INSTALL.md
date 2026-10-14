@@ -227,6 +227,8 @@ If an old user scale override is present, `adb shell wm density reset` removes o
 
 Check colorful icons and photos on the phone itself. A screenshot cannot show whether its physical display is hazy. Colors looked normal on the owner's Android 11 setup.
 
+Also check maximum brightness on the phone. If it is too dim, follow [the tested backlight-scale adjustment](TROUBLESHOOTING.md#maximum-brightness-is-too-low). This is a setting to apply after installation; the image builder does not enable it for you.
+
 If you use a mixed WPA2/WPA3 network, connect to it and check the Wi-Fi configuration:
 
 ```sh
@@ -251,6 +253,8 @@ adb shell getprop sys.phh.wallpaper_defaults
 The home wallpaper property should reference `/system/etc/cph-wallpaper-defaults/wallpaper`. A fresh setup should report `initialized`; a setup with existing wallpaper choices should report `preserved`. Normal setup or backup restoration can replace those choices afterward.
 
 ## 11. Update Play Store and the bundled apps
+
+The steps below worked during the original setup. On October 13, 2026, the same phone's Play Store instead showed a Play Protect certification block. Google accepted custom-ROM device registration, but the block remained after a restart and cache refresh. See [the current validation limits](VALIDATION.md#october-13-2026-follow-up); do not assume sign-in, updates or certification will work on every installation.
 
 Connect through working Wi-Fi and sign in to Play Store privately on the phone. Our temporary USB internet connection worked, but the old Google sign-in screen still reported no network. The Wi-Fi fix allowed sign-in to complete.
 
